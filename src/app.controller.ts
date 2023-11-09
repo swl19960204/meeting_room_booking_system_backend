@@ -15,7 +15,7 @@ export class AppController {
   // @SetMetadata('require-login', true)
   @RequireLogin()
   // @SetMetadata('require-permission', ['ddd'])
-  @RequirePermission('ddd')
+  @RequirePermission('ccc')
   aaaa(@UserInfo('username') username: string, @UserInfo() userInfo) {
     console.log(
       '🚀 ~ file: app.controller.ts:20 ~ AppController ~ aaaa ~ userInfo:',
