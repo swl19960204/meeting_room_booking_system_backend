@@ -17,6 +17,7 @@ import { md5 } from 'src/utils';
 import { LoginUserVo } from './vo/login-user.vo';
 import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { Like } from 'typeorm';
 @Injectable()
 export class UserService {
   private logger = new Logger();
@@ -235,5 +236,56 @@ export class UserService {
       this.logger.error(e, UserService);
       return '用户信息修改失败';
     }
+  }
+
+  async freezeUserById(userId: number) {
+    const freezeUser = await this.userRepository.findOneBy({
+      id: userId,
+    });
+
+    freezeUser.isFrozen = true;
+
+    await this.userRepository.save(freezeUser);
+  }
+
+  async findUsers(
+    username: string,
+    nickName: string,
+    email: string,
+    pageNo: number,
+    pageSize: number,
+  ) {
+    // TODO:大于0
+    const skipCount = (pageNo - 1) * pageSize;
+    const condition: Record<string, any> = {};
+    if (username) {
+      condition.username = Like(`%${username}%`);
+    }
+    if (nickName) {
+      condition.nickName = Like(`%${nickName}%`);
+    }
+    if (email) {
+      condition.email = Like(`%${email}%`);
+    }
+    const [users, totalCount] = await this.userRepository.findAndCount({
+      select: [
+        'id',
+        'username',
+        'nickName',
+        'email',
+        'phoneNumber',
+        'isFrozen',
+        'headPic',
+        'createTime',
+      ],
+      skip: skipCount,
+      take: pageSize,
+      where: condition,
+    });
+
+    return {
+      users,
+      totalCount,
+    };
   }
 }

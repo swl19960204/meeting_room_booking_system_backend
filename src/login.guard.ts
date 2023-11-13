@@ -10,6 +10,7 @@ import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs';
 import { Permission } from './user/entities/permission.entity';
 import { Request } from 'express';
+import { UnLoginException } from './unlogin.filter';
 
 interface JwtUserData {
   userId: number;
@@ -49,6 +50,7 @@ export class LoginGuard implements CanActivate {
     const { authorization } = request.headers;
     if (!authorization) {
       throw new UnauthorizedException('鉴权失败');
+      // throw new UnLoginException();
     }
 
     try {
