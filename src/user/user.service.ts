@@ -17,6 +17,7 @@ import { md5 } from 'src/utils';
 import { LoginUserVo } from './vo/login-user.vo';
 import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UserListVo } from './vo/user-list.vo';
 import { Like } from 'typeorm';
 @Injectable()
 export class UserService {
@@ -170,6 +171,7 @@ export class UserService {
         });
         return arr;
       }, []),
+      email: user.email,
     };
   }
 
@@ -183,7 +185,7 @@ export class UserService {
     return user;
   }
 
-  async updatePassword(userId: number, passwordDto: UpdateUserPasswordDto) {
+  async updatePassword(passwordDto: UpdateUserPasswordDto) {
     const captcha = await this.redisService.get(
       `update_password_captcha_${passwordDto.email}`,
     );
@@ -194,8 +196,11 @@ export class UserService {
       throw new HttpException('验证码不正确', HttpStatus.BAD_REQUEST);
     }
     const foundUser = await this.userRepository.findOneBy({
-      id: userId,
+      username: passwordDto.username,
     });
+    if (foundUser.email !== passwordDto.email) {
+      throw new HttpException('邮箱不正确', HttpStatus.BAD_REQUEST);
+    }
     foundUser.password = md5(passwordDto.password);
     try {
       await this.userRepository.save(foundUser);
@@ -282,10 +287,9 @@ export class UserService {
       take: pageSize,
       where: condition,
     });
-
-    return {
-      users,
-      totalCount,
-    };
+    const vo = new UserListVo();
+    vo.users = users;
+    vo.totalCount = totalCount;
+    return vo;
   }
 }
