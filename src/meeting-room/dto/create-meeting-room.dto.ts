@@ -1,19 +1,23 @@
 import { IsNotEmpty, MaxLength } from 'class-validator';
+import {  ApiProperty } from '@nestjs/swagger';
 
 export class CreateMeetingRoomDto {
+  @ApiProperty()
   @IsNotEmpty({
     message: '会议室名称不能为空',
   })
-  @MaxLength(10, {
-    message: '会议室名称最长为 10 字符',
+  @MaxLength(15, {
+    message: '会议室名称最长为 15 字符',
   })
   name: string;
 
+  @ApiProperty()
   @IsNotEmpty({
     message: '容量不能为空',
   })
   capacity: number;
 
+  @ApiProperty()
   @IsNotEmpty({
     message: '位置不能为空',
   })
@@ -22,6 +26,7 @@ export class CreateMeetingRoomDto {
   })
   location: string;
 
+  @ApiProperty()
   @IsNotEmpty({
     message: '设备不能为空',
   })
@@ -30,6 +35,7 @@ export class CreateMeetingRoomDto {
   })
   equipment: string;
 
+  @ApiProperty()
   @IsNotEmpty({
     message: '描述不能为空',
   })

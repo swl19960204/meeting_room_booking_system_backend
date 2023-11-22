@@ -199,6 +199,7 @@ export class UserController {
   async refresh(@Query('refreshToken') refreshToken: string) {
     try {
       const data = this.jwtService.verify(refreshToken);
+      console.log("🚀 ~ file: user.controller.ts:202 ~ UserController ~ refresh ~ data:", data)
 
       const user = await this.userService.findUserById(data.userId, false);
 
