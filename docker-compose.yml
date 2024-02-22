@@ -14,7 +14,7 @@ services:
   mysql-container:
     image: mysql
     volumes:
-      - D:/project/Docker/mysql-test:/var/lib/mysql
+      - /Users/swl/mysql-data:/var/lib/mysql
     environment:
       MYSQL_DATABASE: meeting_room_booking_system
       MYSQL_ROOT_PASSWORD: swl
@@ -23,7 +23,8 @@ services:
   redis-container:
     image: redis
     volumes:
-      - D:/project/Docker/redis-test:/data
+      # - D:/project/Docker/redis-test:/data
+      - /Users/guang/redis-data:/data
     # networks:
     #   - common-network
 # networks:
